@@ -1,31 +1,169 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "WC ACM DL";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+
+<div class="">
+
+    <div class="row">
+        <div id="vis"></div>
+    </div>
+
+    <div class="row">
+        <div class="form-inline">
+            <div class="form-group col-md-12">
+
+                <label for="exampleInputEmail1">Par&aacute;metro</label>
+                <input type="text" class="form-control" id="query" placeholder="Buscar">
+
+                <label for="exampleInputFile">A&ntilde;o</label>
+                <select class="form-control" id="year">
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>
+                    <option value="2015">2015</option>
+                    <option value="2014">2014</option>
+                    <option value="2013">2013</option>
+                    <option value="2012">2012</option>
+                    <option value="2011">2011</option>
+                    <option value="2010">2010</option>
+                    <option value="2000">2000</option>
+                    <option value="1990">1990</option>
+                    <option value="1980">1980</option>
+                    <option value="1970">1970</option>
+                    <option value="1960">1960</option>
+                    <option value="1950">1950</option>
+                </select>
+
+                <button type="button" class="btn btn-default" onclick="Buscar()">Buscar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Resumen</th>
+                </tr>
+            </thead>
+            <tbody id="btable">
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+<div style="display: none">
+    <form id="form">
+
+        <p style="position: absolute; right: 0; top: 0" id="status"></p>
+
+        <div style="text-align: center">
+            <div id="presets"></div>
+            <div id="custom-area">
+                <p><label for="text">Paste your text below!</label>
+                <p>
+                    <textarea id="text">
+How the Word Cloud Generator Works
+
+The layout algorithm for positioning words without overlap is available on GitHub under an open source license as d3-cloud. Note that this is the only the layout algorithm and any code for converting text into words and rendering the final output requires additional development.
+
+As word placement can be quite slow for more than a few hundred words, the layout algorithm can be run asynchronously, with a configurable time step size. This makes it possible to animate words as they are placed without stuttering. It is recommended to always use a time step even without animations as it prevents the browser’s event loop from blocking while placing the words.
+
+The layout algorithm itself is incredibly simple. For each word, starting with the most “important”:
+
+Attempt to place the word at some starting point: usually near the middle, or somewhere on a central horizontal line.
+If the word intersects with any previously placed words, move it one step along an increasing spiral. Repeat until no intersections are found.
+The hard part is making it perform efficiently! According to Jonathan Feinberg, Wordle uses a combination of hierarchical bounding boxes and quadtrees to achieve reasonable speeds.
+
+Glyphs in JavaScript
+
+There isn’t a way to retrieve precise glyph shapes via the DOM, except perhaps for SVG fonts. Instead, we draw each word to a hidden canvas element, and retrieve the pixel data.
+
+Retrieving the pixel data separately for each word is expensive, so we draw as many words as possible and then retrieve their pixels in a batch operation.
+
+Sprites and Masks
+
+My initial implementation performed collision detection using sprite masks. Once a word is placed, it doesn't move, so we can copy it to the appropriate position in a larger sprite representing the whole placement area.
+
+The advantage of this is that collision detection only involves comparing a candidate sprite with the relevant area of this larger sprite, rather than comparing with each previous word separately.
+
+Somewhat surprisingly, a simple low-level hack made a tremendous difference: when constructing the sprite I compressed blocks of 32 1-bit pixels into 32-bit integers, thus reducing the number of checks (and memory) by 32 times.
+
+In fact, this turned out to beat my hierarchical bounding box with quadtree implementation on everything I tried it on (even very large areas and font sizes). I think this is primarily because the sprite version only needs to perform a single collision test per candidate area, whereas the bounding box version has to compare with every other previously placed word that overlaps slightly with the candidate area.
+
+Another possibility would be to merge a word’s tree with a single large tree once it is placed. I think this operation would be fairly expensive though compared with the analagous sprite mask operation, which is essentially ORing a whole block.
+
+    </textarea>
+                    <button id="go" type="submit">Go!</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <div style="float: right; text-align: right">
+            <p><label for="max">Number of words:</label> <input type="number" value="250" min="1" id="max">
+            <p>
+                <label for="per-line"><input type="checkbox" id="per-line"> One word per line</label>
+                <!--<p><label for="colours">Colours:</label> <a href="#" id="random-palette">get random palette</a>-->
+            <p>
+                <label>Download:</label>
+                <button id="download-svg">SVG</button>
+                <!-- |
+                <a id="download-png" href="#">PNG</a>-->
+        </div>
+
+        <div style="float: left">
+            <p>
+                <label>Spiral:</label>
+                <label for="archimedean"><input type="radio" name="spiral" id="archimedean" value="archimedean" checked="checked"> Archimedean</label>
+                <label for="rectangular"><input type="radio" name="spiral" id="rectangular" value="rectangular"> Rectangular</label>
+            <p>
+                <label for="scale">Scale:</label>
+                <label for="scale-log"><input type="radio" name="scale" id="scale-log" value="log" checked="checked"> log n</label>
+                <label for="scale-sqrt"><input type="radio" name="scale" id="scale-sqrt" value="sqrt"> √n</label>
+                <label for="scale-linear"><input type="radio" name="scale" id="scale-linear" value="linear"> n</label>
+            <p><label for="font">Font:</label> <input type="text" id="font" value="Impact">
+        </div>
+
+        <div id="angles">
+            <p>
+                <input type="number" id="angle-count" value="5" min="1"> <label for="angle-count">orientations</label>
+                <label for="angle-from">from</label> <input type="number" id="angle-from" value="-60" min="-90" max="90"> °
+                <label for="angle-to">to</label> <input type="number" id="angle-to" value="60" min="-90" max="90"> °
+        </div>
+
+        <hr style="clear: both">
+
+        <p style="float: right"><a href="about/">How the Word Cloud Generator Works</a>.
+        <p style="float: left">Copyright &copy; <a href="http://www.jasondavies.com/">Jason Davies</a> | <a href="../privacy/">Privacy Policy</a>. The generated word clouds may be used for any purpose.
+
+    </form>
 </div>
+
+@section scripts{
+    <script src="~/Scripts/Cloud/d3.min.js"></script>
+    <script src="~/Scripts/Cloud/cloud.min.js"></script>
+    <script>
+        function Buscar() {
+            $.ajax({
+                url: "/Home/Data?year=" + $("#year").val() + "&query=" + $("#query").val()
+            }).done(function (data) {
+                $("#btable").empty()
+                data.papers.forEach(function (paper) {
+                    $("#btable").append("<tr><td>" + paper.Title + "</td><td>" + paper.Abstract + "</td></tr>");
+                });
+                $("#text").empty();
+                $("#text").append(data.TitlesAbstract);
+                $("#go").click();
+            });
+        }
+    </script>
+}
+
