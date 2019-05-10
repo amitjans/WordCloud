@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using HtmlAgilityPack;
 using WordCloud.Models;
@@ -17,7 +13,7 @@ namespace WordCloud.Controllers
             return View();
         }
 
-        public JsonResult Data(int year, string query)
+        public JsonResult Data(int year, string query, string publisher, string srt)
         {
             WebClient client = new WebClient();
             //client.Proxy = proxy;
@@ -27,7 +23,14 @@ namespace WordCloud.Controllers
 
             var data = new DataForGeneration();
 
-            byte[] pageContent = client.DownloadData("https://dl.acm.org/results.cfm?query=" + query + "&filtered=&within=owners.owner%3DHOSTED&dte=" + year + "&bfr=&srt=_score");
+            var url = "https://dl.acm.org/results.cfm?query=" + query + "&filtered=";
+            if (!string.IsNullOrEmpty(publisher))
+            {
+                url += "acmdlPublisherName.raw=" + publisher;
+            }
+            url += "&within=owners.owner%3DHOSTED&dte=" + year + "&bfr=" + year + "&srt=" + srt;
+
+            byte[] pageContent = client.DownloadData(url);
 
             UTF8Encoding utf = new UTF8Encoding();
             baseHtml = utf.GetString(pageContent);
@@ -43,9 +46,22 @@ namespace WordCloud.Controllers
 
                 var title = node.SelectSingleNode(".//div[@class='title']/a").InnerText.Replace("\n", "");
                 var resumee = node.SelectSingleNode(".//div[@class='abstract']")?.InnerText.Replace("\n", "") ?? "";
+                var publishername = node.SelectSingleNode(".//div[@class='publisher']").InnerText;
+                var kw = node.SelectSingleNode(".//div[@class='kw']")?.InnerText ?? "";
+                if (kw.Contains(":"))
+                {
+                    kw = kw.Split(":"[0])[1].Trim();
+                }
+                if (publishername.Contains(";"))
+                {
+                    publishername = publishername.Split(";"[0])[1];
+                }
+                else if (publishername.Contains(";")) {
+                    publishername = publishername.Split(":"[0])[1].Trim();
+                }
 
-                data.TitlesAbstract += title + " " + resumee + " ";
-                data.papers.Add(new Paper() { Title = title, Abstract = resumee });
+                data.TitlesAbstract += title + " " + resumee + " " + kw + " ";
+                data.papers.Add(new Paper() { Title = title, Abstract = resumee, Publisher = publishername, KeyWords = kw });
             }
             return Json(data, JsonRequestBehavior.AllowGet);
         }

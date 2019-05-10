@@ -36,6 +36,23 @@
                     <option value="1950">1950</option>
                 </select>
 
+                <label for="exampleInputFile">Orden</label>
+                <select class="form-control" id="srt">
+                    <option value="_score">Relevancia</option>
+                    <option value="publicationDate">fecha de publicaci&oacute;n</option>
+                    <option value="citedCount">Cantidad de Citas</option>
+                    <option value="download6Weeks">Descargas(6 semanas)</option>
+                    <option value="download12Months">Descargas(12 meses)</option>
+                    <option value="downloadAll">Descargas</option>
+                </select>
+
+                <label for="exampleInputFile">Editor</label>
+                <select class="form-control" id="publisher">
+                    <option value="">Todos</option>
+                    <option value="ACM">ACM</option>
+                    <option value="IEEE Press">IEEE</option>
+                </select>
+
                 <button type="button" class="btn btn-default" onclick="Buscar()">Buscar</button>
             </div>
         </div>
@@ -48,11 +65,12 @@
                 <tr>
                     <th>T&iacute;tulo</th>
                     <th>Resumen</th>
+                    <th>Editor</th>
                 </tr>
             </thead>
             <tbody id="btable">
                 <tr>
-                    <td></td>
+                    <td colspan="3"></td>
                 </tr>
             </tbody>
         </table>
@@ -153,11 +171,11 @@ Another possibility would be to merge a word’s tree with a single large tree o
     <script>
         function Buscar() {
             $.ajax({
-                url: "/Home/Data?year=" + $("#year").val() + "&query=" + $("#query").val()
+                url: "/Home/Data?year=" + $("#year").val() + "&query=" + $("#query").val() + "&srt=" + $("#srt").val() + "&publisher=" + $("#publisher").val()
             }).done(function (data) {
                 $("#btable").empty()
                 data.papers.forEach(function (paper) {
-                    $("#btable").append("<tr><td>" + paper.Title + "</td><td>" + paper.Abstract + "</td></tr>");
+                    $("#btable").append("<tr><td>" + paper.Title + "</td><td>" + paper.Abstract + "</td><td>" + paper.Publisher + "</td></tr>");
                 });
                 $("#text").empty();
                 $("#text").append(data.TitlesAbstract);

@@ -9,5 +9,7 @@ namespace WordCloud.Models
     {
         public string Title { get; set; }
         public string Abstract { get; set; }
+        public string Publisher { get; set; }
+        public string KeyWords { get; set; }
     }
 }
