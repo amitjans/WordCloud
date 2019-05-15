@@ -2,9 +2,7 @@
     ViewBag.Title = "WC ACM DL";
 }
 
-
 <div class="">
-
     <div class="row">
         <div id="vis"></div>
     </div>
@@ -12,28 +10,20 @@
     <div class="row">
         <div class="form-inline">
             <div class="form-group col-md-12">
-
                 <label for="exampleInputEmail1">Par&aacute;metro</label>
                 <input type="text" class="form-control" id="query" placeholder="Buscar">
 
                 <label for="exampleInputFile">A&ntilde;o</label>
                 <select class="form-control" id="year">
-                    <option value="2019">2019</option>
-                    <option value="2018">2018</option>
-                    <option value="2017">2017</option>
-                    <option value="2016">2016</option>
-                    <option value="2015">2015</option>
-                    <option value="2014">2014</option>
-                    <option value="2013">2013</option>
-                    <option value="2012">2012</option>
-                    <option value="2011">2011</option>
-                    <option value="2010">2010</option>
-                    <option value="2000">2000</option>
+                    @for (int i = DateTime.Now.Year; i >= 2000; i--)
+                    {
+                        @Html.Raw("<option value=\"" + i + "\">" + i + "</option>")
+                    }
                     <option value="1990">1990</option>
-                    <option value="1980">1980</option>
-                    <option value="1970">1970</option>
-                    <option value="1960">1960</option>
-                    <option value="1950">1950</option>
+                    <option value="1980">1990</option>
+                    <option value="1970">1990</option>
+                    <option value="1960">1990</option>
+                    <option value="1950">1990</option>
                 </select>
 
                 <label for="exampleInputFile">Orden</label>
@@ -54,13 +44,14 @@
                 </select>
 
                 <button type="button" class="btn btn-default" onclick="Buscar()">Buscar</button>
+                <button type="button" class="btn btn-default" id="download-png">Descargar</button>
             </div>
         </div>
     </div>
 
 
     <div class="row">
-        <table class="table table-hover">
+        <table class="table table-hover" style="display: none;">
             <thead>
                 <tr>
                     <th>T&iacute;tulo</th>
@@ -74,8 +65,11 @@
                 </tr>
             </tbody>
         </table>
+        <div class="lds-ellipsis" style="display: none;"><div></div><div></div><div></div><div></div></div>
     </div>
 </div>
+
+<p id="textdata"></p>
 
 <div style="display: none">
     <form id="form">
@@ -126,15 +120,11 @@ Another possibility would be to merge a word’s tree with a single large tree o
         <hr>
 
         <div style="float: right; text-align: right">
-            <p><label for="max">Number of words:</label> <input type="number" value="250" min="1" id="max">
+            <p><label for="max">Number of words:</label> <input type="number" value="3000" min="1" id="max">
             <p>
                 <label for="per-line"><input type="checkbox" id="per-line"> One word per line</label>
                 <!--<p><label for="colours">Colours:</label> <a href="#" id="random-palette">get random palette</a>-->
             <p>
-                <label>Download:</label>
-                <button id="download-svg">SVG</button>
-                <!-- |
-                <a id="download-png" href="#">PNG</a>-->
         </div>
 
         <div style="float: left">
@@ -157,28 +147,29 @@ Another possibility would be to merge a word’s tree with a single large tree o
                 <label for="angle-to">to</label> <input type="number" id="angle-to" value="60" min="-90" max="90"> °
         </div>
 
-        <hr style="clear: both">
-
-        <p style="float: right"><a href="about/">How the Word Cloud Generator Works</a>.
-        <p style="float: left">Copyright &copy; <a href="http://www.jasondavies.com/">Jason Davies</a> | <a href="../privacy/">Privacy Policy</a>. The generated word clouds may be used for any purpose.
-
     </form>
 </div>
 
 @section scripts{
     <script src="~/Scripts/Cloud/d3.min.js"></script>
     <script src="~/Scripts/Cloud/cloud.min.js"></script>
+    <link href="~/Content/spinner.min.css" rel="stylesheet" />
     <script>
         function Buscar() {
+            $(".table").fadeOut();
+            $(".lds-ellipsis").fadeIn();
+            $("#btable").empty();
             $.ajax({
                 url: "/Home/Data?year=" + $("#year").val() + "&query=" + $("#query").val() + "&srt=" + $("#srt").val() + "&publisher=" + $("#publisher").val()
             }).done(function (data) {
-                $("#btable").empty()
+                $(".lds-ellipsis").fadeOut();
+                $(".table").fadeIn();
                 data.papers.forEach(function (paper) {
                     $("#btable").append("<tr><td>" + paper.Title + "</td><td>" + paper.Abstract + "</td><td>" + paper.Publisher + "</td></tr>");
                 });
                 $("#text").empty();
                 $("#text").append(data.TitlesAbstract);
+                $("#textdata").append(data.TitlesAbstract);
                 $("#go").click();
             });
         }

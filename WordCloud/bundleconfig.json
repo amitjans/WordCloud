@@ -1,0 +1,14 @@
+[
+  {
+    "outputFileName": "Scripts/Cloud/cloud.min.js",
+    "inputFiles": [
+      "Scripts/Cloud/cloud.js"
+    ]
+  },
+  {
+    "outputFileName": "Content/spinner.min.css",
+    "inputFiles": [
+      "Content/spinner.css"
+    ]
+  }
+]
