@@ -40,7 +40,7 @@ namespace WordCloud.Controllers
                     break;
                 data = GetData(htmlNodes, data, url);
             }
-            var temp = data.TitlesAbstract.ToLowerInvariant();
+            var temp = data.TitlesAbstract?.ToLowerInvariant() ?? "";
             foreach (var item in query.Split(" "[0]))
             {
                 temp = temp.Replace(" " + item.ToLowerInvariant().Trim() + " ", " ");

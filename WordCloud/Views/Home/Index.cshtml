@@ -48,28 +48,44 @@
             </div>
         </div>
     </div>
+    <div>
+        <br />
+        <div class="row">
+            <div class="container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#home">Art&iacute;culos</a></li>
+                    <li><a data-toggle="tab" href="#menu1">Texto para representar</a></li>
+                </ul>
 
-
-    <div class="row">
-        <table class="table table-hover" style="display: none;">
-            <thead>
-                <tr>
-                    <th>T&iacute;tulo</th>
-                    <th>Resumen</th>
-                    <th>Editor</th>
-                </tr>
-            </thead>
-            <tbody id="btable">
-                <tr>
-                    <td colspan="3"></td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="lds-ellipsis" style="display: none;"><div></div><div></div><div></div><div></div></div>
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <table class="table table-hover" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>T&iacute;tulo</th>
+                                    <th>Resumen</th>
+                                    <th>Editor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="btable">
+                                <tr>
+                                    <td colspan="3"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="lds-ellipsis" style="display: none;"><div></div><div></div><div></div><div></div></div>
+                    </div>
+                    <div id="menu1" class="tab-pane fade">
+                        <p id="textdata"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>
 
-<p id="textdata"></p>
+
 
 <div style="display: none">
     <form id="form">
@@ -169,6 +185,7 @@ Another possibility would be to merge a word’s tree with a single large tree o
                 });
                 $("#text").empty();
                 $("#text").append(data.TitlesAbstract);
+                $("#textdata").empty();
                 $("#textdata").append(data.TitlesAbstract);
                 $("#go").click();
             });
