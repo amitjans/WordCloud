@@ -171,6 +171,13 @@ Another possibility would be to merge a word’s tree with a single large tree o
     <script src="~/Scripts/Cloud/cloud.min.js"></script>
     <link href="~/Content/spinner.min.css" rel="stylesheet" />
     <script>
+        var input = document.getElementById("query");
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                Buscar();
+            }
+        });
         function Buscar() {
             $(".table").fadeOut();
             $(".lds-ellipsis").fadeIn();
